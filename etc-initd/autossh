@@ -1,0 +1,39 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          autossh
+# Required-Start:    $local_fs $remote_fs $network $syslog
+# Required-Stop:     $local_fs $remote_fs $network $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts the autossh
+# Description:       starts the autossh
+### END INIT INFO
+
+case "$1" in
+    start)
+    echo "route del TPopenWrt.lan"
+    sudo route del default gw TPopenWrt.lan
+    sleep 1s
+    echo "start autossh"
+    /usr/bin/autossh -M 0 -fN -o "PubkeyAuthentication=yes" -o "StrictHostKeyChecking=false" -o "PasswordAuthentication=no" -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -R 56701:localhost:22 -i /home/pi/.ssh/id_rsa git@xyzbuy.cn
+    /usr/bin/autossh -M 0 -fN -o "PubkeyAuthentication=yes" -o "StrictHostKeyChecking=false" -o "PasswordAuthentication=no" -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -R 56781:localhost:8081 -i /home/pi/.ssh/id_rsa git@xyzbuy.cn
+    sudo motion
+    ;;
+    stop)
+    echo "stop autossh"
+    ps -ef|grep 'autossh\/autossh'|awk '{print "kill -9 "$2}'|sh
+    sudo killall -9 motion
+    ;;
+    restart)
+    sudo route del default gw TPopenWrt.lan
+    sleep 1s
+    ps -ef|grep 'autossh\/autossh'|awk '{print "kill -9 "$2}'|sh
+    echo "restart autossh"
+    /usr/bin/autossh -M 0 -fN -o "PubkeyAuthentication=yes" -o "StrictHostKeyChecking=false" -o "PasswordAuthentication=no" -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -R 56701:localhost:22 -i /home/pi/.ssh/id_rsa git@xyzbuy.cn
+    /usr/bin/autossh -M 0 -fN -o "PubkeyAuthentication=yes" -o "StrictHostKeyChecking=false" -o "PasswordAuthentication=no" -o "ServerAliveInterval 60" -o "ServerAliveCountMax 3" -R 56781:localhost:8081 -i /home/pi/.ssh/id_rsa git@xyzbuy.cn
+    ;;
+    *)
+    echo "Usage: $0 (start|stop)"
+    ;;
+esac
+exit 0

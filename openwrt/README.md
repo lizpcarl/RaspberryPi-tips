@@ -1,5 +1,5 @@
-# [RaspberryPi tips](https://github.com/lizpcarl/RaspberryPi-tips)
-record some usage for RaspberryPi; For example,  Camera, motion, autossh, etc.
+# [openWrt tips](https://github.com/lizpcarl/RaspberryPi-tips)
+record some usage for openWrt;
 
 ##Introduce
 使用了多个openwrt路由器，包括 TP-LINK TL-WDR3500 v1(Atheros AR9344 rev 2 560MHz,128M ram,8M rom)、NEXX乐携 WT3020(MT7620N 580Mhz，64M RAM，8M rom)、路由宝1s(7620A 580MHz,128M DDR2,32M rom)、新路由3(newifi3 MediaTek MT7621A ver 1,CPU: 880MHz, DDR: 1066MHz，双核880MHz四线程, 512MB DDR3,32M rom)、Phicomm K2(MediaTek MT7620A ver 2 580MHz,64MB DDR2,8M rom)；

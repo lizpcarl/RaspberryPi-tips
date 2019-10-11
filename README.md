@@ -11,8 +11,7 @@ record some usage for RaspberryPi; For example,  Camera, motion, autossh, etc.
 ##### 3. 修改crontab -e的默认编辑器  
 update-alternatives --config editor  
 选择第3项vim.basic即可
-##### 4. vim ~/.bashrc. 
-反注释，让ll生效;
+##### 4. 取消ll项的注释，让ll生效 vim /home/pi/.bashrc
 ##### 5. 摄像头驱动配置
 vim /etc/modules  
 bcm2835-v4l2
@@ -26,10 +25,8 @@ target_dir /var/lib/motion --> /var/www/motion(先sudo mkdir -p /var/www/motion)
 ##### 8. 配置自启动项
 sudo update-rc.d autossh defaults
 sudo update-rc.d motion defaults
-##### 9. 生成RTSP视频流  
-raspivid -o - -t 0 -w 800 -h 600 -fps 25|cvlc -vvv stream:///dev/stdin --sout  '#standard{access=http,mux=ts,dst=:8081}' :demux=h264
-http://mycam.xyzbuy.cn
-
+##### 9. 生成RTSP视频流
+raspivid -o - -t 0 -w 800 -h 600 -fps 25|cvlc -vvv stream:///dev/stdin --sout '#standard{access=http,mux=ts,dst=:8081}' :demux=h264 http://mycam.xyzbuy.cn
 
 ### 2.常用的crontab任务列表，一台与openWrt路由器（带wifidog认证功能）直接相连的RaspberryPi，
 *本地IP上报、默认路由选择（删除有线网卡的默认网关）、定时重连autossh、夜间关闭摄像头功能、定时清理录像文件释放空间*
@@ -39,9 +36,25 @@ pi@raspberrypi2B:~ $ crontab -l
 0 * * * * curl -A "heartbeat from RaspberryPi2B+gitsource to test IP" -I http://xyzbuy.cn
 #0 * * * * sudo route del default gw TPopenWrt.lan 
 1 7 * * * /etc/init.d/autossh stop  
-2 7 * * * /etc/init.d/autossh start  
-39 19 * * * sudo killall -9 motion  
+2 7 * * * /etc/init.d/autossh start
+39 19 * * * sudo killall -9 motion
+0 7-19 * * * /home/pi/restartmotion.sh
 3 7 * * * find /var/www/motion -ctime +7|xargs sudo rm -rf
+```
+或者
+```
+0 * * * * curl -A "heartbeat from RaspberryPi3rs to test IP" -I http://xyzbuy.cn
+39 6 * * * /etc/init.d/autossh start
+39 19 * * * sudo killall -9 motion
+0 7-19 * * * /home/pi/restartmotion.sh
+3 7-17 * * * find /var/www/motion -ctime +7|xargs sudo rm -rf
+#2 * * * * /etc/init.d/autossh restart
+```
+```
+pi@raspberrypi3B:~ $ cat /home/pi/restartmotion.sh
+sudo killall -9 motion
+sleep 1
+sudo motion
 ```
 
 ### 3.常用来做NAT穿越，设置socket5代理，以目的地IP做上网的代理中转；可躲僻一些服务对IP的封锁、远程登录家中路由器做一些常规配置。
@@ -85,5 +98,5 @@ sudo apt-get upgrade
 sudo rpi-update
 
 ### 7.GPIO
-安装gpio库
-sudo apt-get install python3-rpi.gpio
+####安装gpio库:
+sudo apt-get install python3-rpi.gpio python3-gpiozero

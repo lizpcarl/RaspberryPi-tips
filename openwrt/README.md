@@ -1,4 +1,4 @@
-# [openWrt tips](https://github.com/lizpcarl/RaspberryPi-tips)
+﻿# [openWrt tips](https://github.com/lizpcarl/RaspberryPi-tips)
 record some usage for openWrt;
 
 ##Introduce
@@ -28,7 +28,7 @@ http://192.168.9.1/luci-static/resources/res/agreements.html
 
 ### 设置无线中继的方式
 1. openwrt: 打开wireless菜单，scan上级SSID(最好为5G)，设置为wwan，client；再在2.4G的接口上创建Access Point；
-2. 老毛子Padavan固件：无线网络 - 无线桥接 (5GHz)-->无线 AP 工作模式:	AP-Client+AP，角色：LAN bridge(相当于交换机)；搜寻上级SSID以及填入密码；“内部网络 (LAN) - DHCP 服务器”必需关闭；(下载地址：http://p4davan.80x86.io/)
+2. 老毛子Padavan固件：无线网络 - 无线桥接 (5GHz)-->无线 AP 工作模式:	AP-Client+AP，角色：LAN bridge(相当于交换机)；搜寻上级SSID以及填入密码；“内部网络 (LAN) - DHCP 服务器”必需关闭；
 
 
 

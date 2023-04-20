@@ -59,6 +59,7 @@ ln -s /opt/sbin/autossh /etc/storage/autossh
 该目录下需要放入以下几个文件：
 id_rsa 805
 known_hosts 346
+dynv6.sh
 myautossh.sh
 其中，id_rsa是利用dropbearkey生成的私钥；know_hosts是访问过服务器后，本地保存的服务端公钥；myautossh.sh这个是定时执行的检测脚本，进行连接和上报本地ipv6地址，启动ipv6中继“6relayd -d -A eth2.2 br0”；需要改成可执行程序。
 [/etc/storage]# chmod +x myautossh.sh
@@ -71,6 +72,7 @@ myautossh.sh
 */5 * * * * token=myToken_with_dynv6 /etc/storage/dynv6.sh myzone.v6.rocks eth2.2
 ```
 作用分别是：维持ssh连接；更新对应域名的ipv4/ipv6的地址。
+如果该路由器用作光猫拨号，它的eth2.2就没有ipv6地址，拨号时ipv6地址在ppp0这个接口名上，使用"ppp0"或者"br0"(LAN接口名)替代即可
 
 5.在“系统管理 - 恢复/导出/上传设置”-->
 “保存 /etc/storage/ 内容到闪存”、“保存 NVRAM 内容到闪存”-->2个都要“提交”，这样才能保存相应的脚本及可执行程序。对于无tf卡的，不需要点，否则因存储空间不够可能产生异常，丢失很多配置。

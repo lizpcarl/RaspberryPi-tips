@@ -2,7 +2,7 @@
 #/etc/storage/myautossh.sh
 #author: LiZheping
 #create date:2023-2-15
-#modify date:2023-4-6
+#modify date:2023-4-20
 #feature:
 #1.无tf卡时每次自动下载opkg，并使用opkg安装autossh、6relayd，实现反向代理注册，并启动ipv6中继模式
 #2.检测autossh的运行状态，检测并启动autossh反向代理端口的连接。
@@ -108,7 +108,7 @@ configAutosshLogFile(){
         echo `date`, $reportIpv6 >>$AUTOSSH_LOGFILE
     fi
 }
-configIpv6(){
+firewallPassIpv6(){
     ip6tables -F
     ip6tables -X
     ip6tables -P INPUT ACCEPT
@@ -154,7 +154,6 @@ then
         lanV6address=$(ip -6 addr list scope global $device | grep -v " fd" | sed -n 's/.*inet6 \([0-9a-f:]\+\).*/\1/p' | head -n 1)
         if [ -z $lanV6address ]
         then
-            configIpv6
             6relayd -d -A $wanNicName br0
             echo `date`,"start 6relayd for ipv6 in LAN.">>$AUTOSSH_LOGFILE
         else
@@ -163,12 +162,12 @@ then
             ipv6headercode=`curl -Is $testIpv6URL| head -1 | cut -d " " -f2`
             if [ $relaydCount -lt 1 ] || [ "$ipv4headercode" = "200" -a "$ipv6headercode" != "200" ]
             then #ipv6网络偶尔中断不通：存在ipv6地址，但v6中继功能失效，v4通而v6不通，此时就再启动中继
-                configIpv6
                 killall -9 6relayd
                 6relayd -d -A $wanNicName br0
                 echo `date`,"start 6relayd since relay disconnected.">>$AUTOSSH_LOGFILE
             fi
         fi
+        firewallPassIpv6
     fi
 else #针对无tf卡opkg、autossh、6relayd在重启后丢失的情况，丢失后会重新安装一遍
     ipv6headercode=`curl -Is $testIpv6URL | head -1 | cut -d " " -f2`

@@ -159,4 +159,5 @@ https://spaces.ac.cn/archives/3604
 https://www.right.com.cn/FORUM/thread-4112503-1-1.html
 《老毛子padavan的IPV6设置教程》，该文参考性高，
 
+[Padavan固件下载](https://opt.cn2qq.com/padavan/)
 -----------------------------------------------------------

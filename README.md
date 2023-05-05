@@ -1,30 +1,38 @@
 ﻿# [RaspberryPi tips](https://github.com/lizpcarl/RaspberryPi-tips)
 record some usage for RaspberryPi; For example,  Camera, motion, autossh, etc.
 
-##Introduce
+##Introduction
 从2014年到现在买了5个不同型号的树莓派了，大部分用来安装motion后做远程摄像头使用。本project用来记录常用的一些命令和操作方法。
 
 ##Tips
 ### 1.树莓派重装后，需要安装的主要软件
 ##### 1. sudo apt-get install  vim autossh motion nodejs golang arduino fonts-inconsolata omxplayer vlc
+
 ##### 2. 安装好autossh之后，可以把本project的etc-initd目录修改到RaspberryPi上对应的/etc/init.d/autossh文件。
-##### 3. 修改crontab -e的默认编辑器  
-update-alternatives --config editor  
+
+##### 3. 修改crontab -e的默认编辑器
+update-alternatives --config editor
 选择第3项vim.basic即可
+
 ##### 4. 取消ll项的注释，让ll生效 vim /home/pi/.bashrc
+
 ##### 5. 摄像头驱动配置
-vim /etc/modules  
+vim /etc/modules
 bcm2835-v4l2
 另外在配置中打开Camera:sudo raspi-config，在Interfacing options中置Camera为enable；
-##### 6. sudo cp autossh /etc/init.d/.  
-修改/etc/init.d/autossh中的端口参数配置  
+
+##### 6. sudo cp autossh /etc/init.d/.
+修改/etc/init.d/autossh中的端口参数配置
+
 ##### 7. 修改motion配置文件,
 sudo vim /etc/motion/motion.conf
 修改daemon=on,设置rotate及width、height，brightness,contrast,saturation,hue, stream_localhost, lightswitch, 
 target_dir /var/lib/motion --> /var/www/motion(先sudo mkdir -p /var/www/motion)
+
 ##### 8. 配置自启动项
 sudo update-rc.d autossh defaults
 sudo update-rc.d motion defaults
+
 ##### 9. 生成RTSP视频流
 raspivid -o - -t 0 -w 800 -h 600 -fps 25|cvlc -vvv stream:///dev/stdin --sout '#standard{access=http,mux=ts,dst=:8081}' :demux=h264 http://mycam.xyzbuy.cn
 
@@ -92,10 +100,14 @@ server {
 ### 6.常用的系统更新命令
 ###### 1.更新源列表刷新
 sudo apt-get update
+
 ###### 2. 更新软件
 sudo apt-get upgrade
+
 ###### 3. 更新raspbian系统
 sudo rpi-update
+或者
+sudo iw wlan0 scan|grep "SSID\|signal\|freq:\|primary channel"
 
 ### 7.GPIO
 ####安装gpio库:

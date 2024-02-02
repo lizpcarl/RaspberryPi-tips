@@ -37,7 +37,7 @@ ebtables -t broute -A BROUTING -p ! ipv6 -j DROP -i eth2.2
 ```
 
 ##接下来是命令行安装
-1.通过opkg安装autossh
+1.通过opkg安装autossh(使用myautossh.sh后，本段可忽略)
 接下来是命令行安装opkg相关包的方法，如果没有tf卡，就不需要安装这些了，因为安装后重启就不见了。
 老毛子(Padavan)路由器安装okpg: opkg.sh
 wget -O - http://bin.entware.net/mipselsf-k3.4/installer/generic.sh | /bin/sh
@@ -46,7 +46,7 @@ wget -O - http://bin.entware.net/mipselsf-k3.4/installer/generic.sh | /bin/sh
 安装autossh：opkg install autossh
 安装6relayd：opkg install 6relayd
 
-2.链接autossh.
+2.链接autossh.(使用myautossh.sh后，本段可忽略)
 ```
 # which autossh
 /opt/sbin/autossh
@@ -160,4 +160,5 @@ https://www.right.com.cn/FORUM/thread-4112503-1-1.html
 《老毛子padavan的IPV6设置教程》，该文参考性高，
 
 [Padavan固件下载](https://opt.cn2qq.com/padavan/)
+[breed下载](https://breed.hackpascal.net/)
 -----------------------------------------------------------

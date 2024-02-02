@@ -92,6 +92,8 @@ server {
 1. iwconfig
 2. iw wlan0 info
 3. sudo iw wlan0 scan
+或者
+sudo iw wlan0 scan|grep "SSID\|signal\|freq:\|primary channel"
 
 ###### 2. 编辑raspberry Pi的无线网线连接
 1. sudo vim /etc/wpa_supplicant/wpa_supplicant.conf
@@ -106,8 +108,21 @@ sudo apt-get upgrade
 
 ###### 3. 更新raspbian系统
 sudo rpi-update
-或者
-sudo iw wlan0 scan|grep "SSID\|signal\|freq:\|primary channel"
+```
+pi@raspberrypiZero:~ $ sudo rpi-update
+ *** Raspberry Pi firmware updater by Hexxeh, enhanced by AndrewS and Dom
+ *** Performing self-update
+ !!! Failed to download update for rpi-update!
+ !!! Make sure you have ca-certificates installed and that the time is set correctly
+#默认方法
+sudo apt-get install ca-certificates
+
+#同步时间
+sudo apt-get install ntpdate
+sudo ntpdate -u ntp.ubuntu.com
+#如果还不行，就直接跳过自更新
+pi@raspberrypiZero:~ $ sudo UPDATE_SELF=0 rpi-update
+```
 
 ### 7.GPIO
 ####安装gpio库:

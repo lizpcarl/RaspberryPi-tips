@@ -2,25 +2,34 @@
 #/etc/storage/myautossh.sh
 #author: LiZheping
 #create date:2023-2-15
-#modify date:2023-4-20
+#modify date:2024-1-16
 #feature:
 #1.无tf卡时每次自动下载opkg，并使用opkg安装autossh、6relayd，实现反向代理注册，并启动ipv6中继模式
 #2.检测autossh的运行状态，检测并启动autossh反向代理端口的连接。
 #3.向指定服务器上报本机的ipv6地址，方便其它openVPN用户使用本机ipv6代理上网。
-#注意要修改tfCardPath、2组端口号、服务器地址
+#注意要修改tfCardDestPath、2组端口号、服务器地址
 
 echo "hello,start check autossh"
 
 sshPort=56788
 vpnPort=56789
-tfCardPath=/media/U
+tfCardDestPath=/media/U
+#tf卡或u盘的物理文件路径，一般为：/dev/sda，个别情况为/dev/mmcblk0，如果无法mv就直接修改这个配置项
+tfCardSourcePath=/dev/sda
 wanNicName=eth2.2
 serverHost=xyzbuy.cn
-serverUser=myname
+serverUser=git
 reportIPServer=http://www.xyzbuy.cn/ip.php
 testIpv4URL=http://speed4.neu6.edu.cn
 testIpv6URL=http://speed.neu6.edu.cn
 
+firewallPassIpv6(){
+    ip6tables -F
+    ip6tables -X
+    ip6tables -P INPUT ACCEPT
+    ip6tables -P OUTPUT ACCEPT
+    ip6tables -P FORWARD ACCEPT
+}
 if [ -f /etc/storage/known_hosts ]
 then
     cp /etc/storage/known_hosts ~/.ssh/
@@ -29,24 +38,27 @@ fi
 export PATH=$PATH:/opt/bin:/opt/sbin
 #针对newifi3的特殊情况，未mount到正确的盘上。/dev/sda是USB接口的盘，存在；但/opt未mount，还是空的目录
 optDir=`ls -A /opt`
-if [[ -z "$optDir" && -b /dev/sda ]]
+if [[ -z "$optDir" && -b "${tfCardSourcePath}" ]]
 then
-    if [ ! -d ${tfCardPath} ]   #/media/U目录不存在时才创建这个空目录
+    if [ ! -d ${tfCardDestPath} ]   #/media/U目录不存在时才创建这个空目录
     then
         mkdir ${tfCardPath}
+        sleep 1
     fi
-    uDiskDir=`ls -A ${tfCardPath}`
+    uDiskDir=`ls -A ${tfCardDestPath}`
     if [ -z "$uDiskDir" ]   #/media/U目录为空时才mount
     then
-        mount -t ext4 /dev/sda ${tfCardPath}
+        mount -t ext4 ${tfCardSourcePath} ${tfCardDestPath}
+        sleep 3
     fi
-    if [ ! -d ${tfCardPath}/opt ]   #/media/U目录不存在时才创建这个空目录
+    if [ ! -d ${tfCardDestPath}/opt ]   #/media/U/opt目录不存在时才创建这个空目录
     then
-        mkdir ${tfCardPath}/opt
+        mkdir ${tfCardDestPath}/opt
+        sleep 1
     fi
-    if [ -d ${tfCardPath}/opt ]
+    if [ -d ${tfCardDestPath}/opt ]
     then
-        mount ${tfCardPath}/opt /opt
+        mount ${tfCardDestPath}/opt /opt
     fi
 fi
 
@@ -74,12 +86,12 @@ clearLogFilePath(){
     unset AUTOSSH_LOGFILE
 }
 configAutosshLogFile(){
-    defaultLogPath=${tfCardPath}/autossh.log
+    defaultLogPath=${tfCardDestPath}/autossh.log
     homeLogPath=~/autossh.log
     #未定义日志路径时才执行一次，后面有值就不需要调用了。
     if [ -z $AUTOSSH_LOGFILE ]
     then
-        if [ -d $tfCardPath ]
+        if [ -d $tfCardDestPath ]
         then
             export AUTOSSH_LOGFILE=$defaultLogPath
             if [ ! -f $defaultLogPath ]
@@ -107,13 +119,6 @@ configAutosshLogFile(){
         reportIpv6=`curl -s ${reportIPServer}/ip.php?myname=${HOSTNAME}\&ipv6Addr=$ipv6Addr`
         echo `date`, $reportIpv6 >>$AUTOSSH_LOGFILE
     fi
-}
-firewallPassIpv6(){
-    ip6tables -F
-    ip6tables -X
-    ip6tables -P INPUT ACCEPT
-    ip6tables -P OUTPUT ACCEPT
-    ip6tables -P FORWARD ACCEPT
 }
 startMySSH(){
     echo "start myautossh"

@@ -8,7 +8,7 @@
 
 3.“系统管理 - 服务”，“启用 SSH 服务:”-->是,“允许远程端口转发 (GatewayPorts):”-->是。
 
-4.“内部网络 (LAN) - 内网设置”，配置“IP 地址:”。
+4.“内部网络 (LAN) - 内网设置”，配置“IP 地址:”。“IP 地址池开始地址:”尾数由2改为102。“DNS 和 WINS 服务器设置”可以配置或者不配置。
 
 5.“外部网络 (WAN) - 外网设置”，启用“响应外部 Ping”
 
@@ -82,6 +82,7 @@ myautossh.sh
 如果tf卡能在diskGenius下格式化为ext4，这种最合适，相关文件直接放在/media/U/opt/目录下，占用空间很小；
 如果一张tf卡有几个分区，以卷标的字母顺序使用第一个分区的映像文件。
 
+7.安装了U盘的情况下，需要修改文件“/etc/storage/started_script.sh”，修改"/media/AiDisk_a1"为"/media/U"，具体修改文件为："AiDisk_$device_name$partno"改为“U”；相应的如果安装了tf卡，要修改"AiCard_$device_name$partno"为“U”。
 
 ##IPv6与中继相关的配置
 “外部网络 (WAN) - IPv6 设置”

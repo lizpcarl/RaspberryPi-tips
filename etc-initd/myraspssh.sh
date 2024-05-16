@@ -19,9 +19,11 @@ motionPort=56789
 serverHost=xyzbuy.cn
 serverUser=myname
 reportIPServer=http://www.xyzbuy.cn/ip.php
-testIpv4URL=http://4.ipw.cn
-testIpv6URL=http://6.ipw.cn
+# testIpv4URL=http://4.ipw.cn
+# testIpv6URL=http://6.ipw.cn
 #testIpv6URL=http://speed.neu6.edu.cn
+testIpv4URL=http://v4.ipv6-test.com/api/myip.php
+testIpv6URL=http://v6.ipv6-test.com/api/myip.php
 
 allsshCount=`ps -ef|grep ssh|grep -v "sshd\|openssh\|myraspssh.sh\|grep" -c`
 autosshCount=`ps -ef|grep autossh|grep -v "sshd\|openssh\|myraspssh.sh\|grep" -c`
@@ -42,7 +44,7 @@ stopAutoSSH(){
 }
 
 reportIpv6Interval(){
-    if [ -n $reportIPServer ]
+    if [ -n "$reportIPServer" ]
     then
         #ipv6Addr=`ifconfig |grep "inet6 addr:"|awk '{print $3}'|grep "240"`
         ipv6Addr=$(ip -6 addr list scope global | grep -v " fd" | sed -n 's/.*inet6 \([0-9a-f:]\+\).*/\1/p' | head -n 1)
@@ -51,7 +53,7 @@ reportIpv6Interval(){
     fi
 
     wanV6address=$(ip -6 addr list scope global $wanNicName | grep -v " fd" | sed -n 's/.*inet6 \([0-9a-f:]\+\).*/\1/p' | head -n 1)
-    if [ -n $wanV6address ]
+    if [ -n "$wanV6address" ]
     then
         v6addrfile=~/.dynv6.addr6
         if [ -f ${v6addrfile} ]
